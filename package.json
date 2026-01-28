@@ -1,7 +1,7 @@
 {
   "name": "@lalax-systems/file-extractor-mcp",
   "version": "0.1.0",
-  "description": "MCP server para extraer, organizar y gestionar archivos entre directorios",
+  "description": "MCP server for extracting, organizing, and managing files between directories",
   "type": "module",
   "main": "build/index.js",
   "bin": {
@@ -13,8 +13,8 @@
     "start": "node build/index.js",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "file", "extractor", "organizer", "filesystem", "lalax-systems"],
-  "author": "Javier Gomez <javier@lalax.systems>",
+  "keywords": ["mcp", "file", "extractor", "organizer", "filesystem", "lalax-systems", "vscode", "cursor", "windsurf", "cline"],
+  "author": "Javier Gomez <info@lalax.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
