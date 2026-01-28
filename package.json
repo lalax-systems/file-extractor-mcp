@@ -1,39 +1,48 @@
 {
   "name": "@lalax-systems/file-extractor-mcp",
   "version": "0.1.0",
-  "description": "MCP server for extracting, organizing, and managing files between directories",
-  "type": "module",
+  "description": "MCP server for extracting files from directories and moving them to another directory",
   "main": "build/index.js",
-  "bin": {
-    "file-extractor-mcp": "./build/index.js"
-  },
+  "type": "commonjs",
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
-    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
     "start": "node build/index.js",
-    "prepublishOnly": "npm run build"
+    "dev": "tsc --watch"
   },
-  "keywords": ["mcp", "file", "extractor", "organizer", "filesystem", "lalax-systems", "vscode", "cursor", "windsurf", "cline"],
+  "keywords": [
+    "mcp",
+    "file-extractor",
+    "file-management",
+    "automation",
+    "productivity"
+  ],
   "author": "Javier Gomez <info@lalax.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lalax-systems/file-extractor-mcp.git"
+    "url": "git+https://github.com/lalax-systems/file-extractor-mcp.git"
   },
   "bugs": {
     "url": "https://github.com/lalax-systems/file-extractor-mcp/issues"
   },
   "homepage": "https://github.com/lalax-systems/file-extractor-mcp#readme",
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^0.6.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "@types/node": "^20.11.24",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "build/",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
