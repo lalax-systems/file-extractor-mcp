@@ -34,12 +34,12 @@ Before installing the File Extractor MCP Server, ensure you have:
    git --version
    ```
 
-4. **MCP-compatible editor**:
-   - Kilo Code
-   - Cursor
-   - Windsurf
-   - Cline
-   - Or any other editor supporting MCP servers
+4. **MCP-compatible client**:
+   - Kilo Code (AI agent)
+   - Cursor (VSCode fork)
+   - Windsurf (VSCode fork)
+   - Cline (VSCode fork)
+   - Or any other client supporting MCP servers
 
 ## Installation Methods
 
@@ -82,7 +82,7 @@ npm install @lalax-systems/file-extractor-mcp
 
 ### Step 1: Configure MCP Settings
 
-1. Open Kilo Code
+1. Open Kilo Code configuration
 2. Navigate to the MCP settings file:
    - Location: `~/.config/Kilo-Code/mcp_settings.json` (Linux/macOS)
    - Location: `%APPDATA%\Kilo-Code\mcp_settings.json` (Windows)
@@ -222,9 +222,9 @@ sudo npm link
 sudo cp -r build /usr/local/lib/file-extractor-mcp
 ```
 
-### Step 2: Configure Editors
+### Step 2: Configure Clients
 
-Configure each editor to use the global installation:
+Configure each client to use the global installation:
 
 ```json
 {
@@ -274,7 +274,7 @@ node build/index.js
 
 ### Step 4: Update Configuration
 
-Update your editor's MCP configuration to point to your development build:
+Update your client's MCP configuration to point to your development build:
 
 ```json
 {
@@ -299,8 +299,8 @@ Update your editor's MCP configuration to point to your development build:
    # Should start without errors
    ```
 
-2. **Verify in your editor**:
-   - Open your editor
+2. **Verify in your client**:
+   - Open your MCP client
    - Check if MCP tools are available
    - Try a simple command like listing files
 
@@ -339,7 +339,7 @@ Update your editor's MCP configuration to point to your development build:
 4. **Check MCP configuration**:
    ```bash
    cat ~/.config/Kilo-Code/mcp_settings.json
-   # Or equivalent for your editor
+   # Or equivalent for your client
    ```
 
 ## Troubleshooting
@@ -363,7 +363,7 @@ Update your editor's MCP configuration to point to your development build:
 - **Solution**:
   - Check the path in MCP configuration
   - Verify the server runs manually
-  - Check editor logs for errors
+  - Check client logs for errors
 
 #### 5. "TypeError: Cannot read properties of undefined"
 - **Cause**: MCP SDK version mismatch
@@ -377,8 +377,8 @@ Update your editor's MCP configuration to point to your development build:
    node build/index.js
    ```
 
-2. **Check editor logs**:
-   - Look for MCP-related logs in your editor
+2. **Check client logs**:
+   - Look for MCP-related logs in your client
    - Check console output
 
 3. **Verify paths**:
@@ -410,7 +410,7 @@ If you encounter issues:
 2. **Check GitHub Issues**: Look for similar issues at [GitHub Issues](https://github.com/lalax-systems/file-extractor-mcp/issues)
 3. **Create a new issue**: If the problem persists, create a new issue with:
    - Your operating system
-   - Editor and version
+   - Client and version
    - Node.js version
    - Error messages
    - Steps to reproduce
