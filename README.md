@@ -178,7 +178,7 @@ recursive: false
 **Desarrollador**: Javier Gomez  
 **Empresa**: Lalax Systems  
 **Repositorio**: https://github.com/lalax-systems/file-extractor-mcp  
-**Sitio web**: https://lalax.systems
+**Sitio web**: https://www.lalax.com
 
 Este proyecto es parte del ecosistema de herramientas MCP desarrolladas por Lalax Systems para mejorar la productividad y automatización en el desarrollo de software.
 
