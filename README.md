@@ -1,225 +1,241 @@
-# File Extractor MCP Server
+# 🗂️ File Extractor MCP Server
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/lalax-systems/file-extractor-mcp)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://spec.modelcontextprotocol.io/)
 
-An MCP (Model Context Protocol) server for extracting, organizing, and managing files between directories. Developed by **Javier Gomez**.
+**Professional MCP server for file management and automation** - Extract, organize, and manage files between directories with AI-powered tools. Developed by **Javier Gomez**.
 
-## Description
+## 🚀 Quick Start
 
-This MCP server provides tools for:
-- Extracting files from a source directory to a target directory
-- Listing files in a directory with pattern filters
-- Organizing files by extension, date, or size
-
-## Quick Example
-
-Here's how you can use this MCP server in your prompts:
-
-```
-Extract all JPG files from my photos directory to a backup folder:
-
-Use the extract_files tool with:
-- sourceDir: "/home/user/photos"
-- targetDir: "/home/user/backup"
-- pattern: "*.jpg"
-- recursive: true
-- move: false
-- conflictResolution: "rename"
-```
-
-## Available Tools
-
-### 1. `extract_files`
-Extracts files from a source directory to a target directory.
-
-**Parameters:**
-- `sourceDir` (string): Path to the source directory
-- `targetDir` (string): Path to the target directory
-- `pattern` (string, optional): File pattern to extract (e.g., `*.jpg`, `*.txt`)
-- `recursive` (boolean, optional): Search recursively in subdirectories (default: `true`)
-- `move` (boolean, optional): Move files instead of copying (default: `false`)
-- `conflictResolution` (string, optional): How to handle name conflicts:
-  - `"skip"`: Skip files with duplicate names
-  - `"overwrite"`: Overwrite existing files
-  - `"rename"`: Rename files with numerical suffix (default)
-
-**Usage example:**
-```json
-{
-  "sourceDir": "/path/to/source",
-  "targetDir": "/path/to/target",
-  "pattern": "*.jpg",
-  "recursive": true,
-  "move": false,
-  "conflictResolution": "rename"
-}
-```
-
-### 2. `list_files`
-Lists files in a directory with detailed information.
-
-**Parameters:**
-- `directory` (string): Path to the directory to list
-- `pattern` (string, optional): File pattern to list (e.g., `*.jpg`, `*.txt`)
-- `recursive` (boolean, optional): List recursively (default: `false`)
-
-**Usage example:**
-```json
-{
-  "directory": "/path/to/directory",
-  "pattern": "*.txt",
-  "recursive": true
-}
-```
-
-### 3. `organize_files`
-Organizes files by specific criteria.
-
-**Parameters:**
-- `sourceDir` (string): Path to the source directory
-- `targetDir` (string, optional): Path to the target directory (default: same as source directory)
-- `organizeBy` (string, optional): Organization criteria:
-  - `"extension"`: Organize by file extension (default)
-  - `"date"`: Organize by modification date (year-month)
-  - `"size"`: Organize by file size
-
-**Usage example:**
-```json
-{
-  "sourceDir": "/path/to/source",
-  "targetDir": "/path/to/target",
-  "organizeBy": "extension"
-}
-```
-
-## Installation
-
-### From GitHub
-
+### Installation
 ```bash
-# Clone the repository
 git clone https://github.com/lalax-systems/file-extractor-mcp.git
 cd file-extractor-mcp
-
-# Install dependencies
 npm install
-
-# Build the project
 npm run build
 ```
 
-### Configuration in Kilo Code
-
-Add to the MCP configuration file (`mcp_settings.json`):
-
+### Configuration (Kilo Code)
+Add to `mcp_settings.json`:
 ```json
 {
   "mcpServers": {
     "file-extractor": {
       "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
-      "disabled": false,
-      "alwaysAllow": [],
-      "description": "MCP server for extracting files from directories and moving them to another directory"
-    }
-  }
-}
-```
-
-### Configuration in VSCode Forks (Cursor, Cline, Windsurf, etc.)
-
-This MCP server is compatible with any VSCode fork that supports MCP servers. Add the following to your MCP configuration file (location varies by editor):
-
-**For Cursor**: `~/.cursor/mcp.json`
-**For Windsurf**: `~/.windsurf/mcp.json`
-**For Cline**: `~/.cline/mcp.json`
-
-```json
-{
-  "mcpServers": {
-    "file-extractor": {
-      "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
+      "args": ["/path/to/file-extractor-mcp/build/index.js"],
       "disabled": false
     }
   }
 }
 ```
 
-### Global Installation (optional)
+## 💡 Prompt Usage Examples
 
+### Example 1: Extract Photos
+```
+I need to backup all my photos. Please use the file-extractor MCP to:
+
+Extract all JPG and PNG files from my camera folder to a backup directory:
+
+- sourceDir: "/home/user/photos/camera"
+- targetDir: "/home/user/backup/photos"
+- pattern: "*.{jpg,png}"
+- recursive: true
+- move: false
+- conflictResolution: "rename"
+```
+
+### Example 2: Organize Downloads
+```
+My downloads folder is a mess. Please organize all files by extension:
+
+Use the organize_files tool with:
+- sourceDir: "/home/user/Downloads"
+- organizeBy: "extension"
+```
+
+### Example 3: Find Large Files
+```
+I need to find all large video files for cleanup:
+
+Use the list_files tool with:
+- directory: "/home/user/videos"
+- pattern: "*.{mp4,avi,mkv}"
+- recursive: true
+```
+
+## 🔧 Available Tools
+
+### 1. `extract_files` - Smart File Extraction
+Extract files with pattern matching and conflict resolution.
+
+**Parameters:**
+- `sourceDir` (string): Source directory path
+- `targetDir` (string): Target directory path  
+- `pattern` (string, optional): File pattern (e.g., `*.jpg`, `*.{txt,md}`)
+- `recursive` (boolean, optional): Search subdirectories (default: `true`)
+- `move` (boolean, optional): Move instead of copy (default: `false`)
+- `conflictResolution` (string, optional): `"skip"`, `"overwrite"`, or `"rename"` (default)
+
+### 2. `list_files` - Directory Analysis
+List files with filtering and detailed information.
+
+**Parameters:**
+- `directory` (string): Directory to analyze
+- `pattern` (string, optional): Filter pattern
+- `recursive` (boolean, optional): Recursive listing (default: `false`)
+
+### 3. `organize_files` - Automated Organization
+Organize files by extension, date, or size.
+
+**Parameters:**
+- `sourceDir` (string): Source directory
+- `targetDir` (string, optional): Target directory (default: same as source)
+- `organizeBy` (string, optional): `"extension"` (default), `"date"`, or `"size"`
+
+## 📊 Real-World Use Cases
+
+### 🖼️ **Photo Management**
 ```bash
-npm install -g @lalax-systems/file-extractor-mcp
+# Backup vacation photos
+sourceDir: "/media/camera/DCIM/2025-vacation"
+targetDir: "/cloud/backup/photos"
+pattern: "*.{jpg,raw,cr2}"
+recursive: true
 ```
 
-The server runs automatically when connected to an MCP-compatible client.
+### 📁 **Project Cleanup**
+```bash
+# Archive old project files
+sourceDir: "/projects/old-project"
+targetDir: "/archive/projects"
+pattern: "*.{log,tmp,bak}"
+move: true
+```
 
-## Project Structure
+### 🗄️ **Document Organization**
+```bash
+# Organize work documents
+sourceDir: "/work/documents"
+organizeBy: "extension"
+```
+
+## 🛠️ Technical Features
+
+- **✅ Recursive Operations**: Process nested directories automatically
+- **✅ Pattern Matching**: Support for glob patterns (`*.jpg`, `*.{txt,md}`)
+- **✅ Conflict Resolution**: Skip, overwrite, or rename duplicate files
+- **✅ Cross-Platform**: Works on Windows, macOS, and Linux
+- **✅ MCP Standard**: Compatible with any MCP client
+- **✅ TypeScript**: Full type safety and modern development
+
+## 📋 Compatibility
+
+### ✅ **AI Agents**
+- Kilo Code
+- Claude Desktop
+- Cursor AI
+- Any MCP-compatible AI agent
+
+### ✅ **VSCode Forks**
+- Cursor
+- Windsurf  
+- Cline
+- Any editor with MCP support
+
+## 🏗️ Project Structure
 
 ```
-file-extractor/
+file-extractor-mcp/
 ├── src/
-│   └── index.ts          # Main server implementation
+│   └── index.ts          # Core server implementation
 ├── build/
-│   └── index.js          # Compiled code
-├── package.json          # Dependencies and scripts
+│   └── index.js          # Compiled production code
+├── docs/
+│   ├── USAGE.md          # Detailed usage guide
+│   └── INSTALLATION.md   # Installation instructions
+├── package.json          # Dependencies and metadata
 ├── tsconfig.json         # TypeScript configuration
 └── README.md            # This documentation
 ```
 
-## Development
+## 🚀 Getting Started
 
-To modify the server:
-
-1. Edit the `src/index.ts` file
-2. Run `npm run build` to compile
-3. Restart your MCP client to load changes
-
-## Usage Examples
-
-### Extract all JPG images:
+### 1. Clone & Build
 ```bash
-# Using the extract_files tool
-sourceDir: "/home/user/photos"
-targetDir: "/home/user/backup"
-pattern: "*.jpg"
+git clone https://github.com/lalax-systems/file-extractor-mcp.git
+cd file-extractor-mcp
+npm install
+npm run build
+```
+
+### 2. Configure Your Client
+**Kilo Code**: Edit `~/.config/Kilo-Code/mcp_settings.json`  
+**Cursor**: Edit `~/.cursor/mcp.json`  
+**Windsurf**: Edit `~/.windsurf/mcp.json`
+
+### 3. Start Using
+The tools will be available in your AI agent's prompt interface.
+
+## 🔍 Advanced Examples
+
+### Batch Processing
+```bash
+# Process multiple directories
+for dir in /data/*/; do
+  # Extract PDFs from each directory
+  sourceDir: "$dir"
+  targetDir: "/archive/pdfs"
+  pattern: "*.pdf"
+  recursive: true
+done
+```
+
+### Automated Backup Script
+```bash
+# Daily backup script
+sourceDir: "/important/documents"
+targetDir: "/backup/daily-$(date +%Y%m%d)"
+pattern: "*"
 recursive: true
+move: false
+conflictResolution: "rename"
 ```
 
-### Organize documents by extension:
-```bash
-# Using the organize_files tool
-sourceDir: "/home/user/downloads"
-organizeBy: "extension"
-```
+## 📈 Performance
 
-### List PDF files in a directory:
-```bash
-# Using the list_files tool
-directory: "/home/user/documents"
-pattern: "*.pdf"
-recursive: false
-```
+- **Fast**: Uses Node.js streams for efficient file operations
+- **Reliable**: Comprehensive error handling and logging
+- **Scalable**: Handles thousands of files efficiently
+- **Safe**: Non-destructive operations by default
 
-## Notes
+## 🤝 Contributing
 
-- The server automatically creates target directories
-- Supports recursive operations in subdirectories
-- Provides name conflict resolution
-- Returns structured JSON with detailed results
+Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-## About
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-**Developer**: Javier Gomez  
-**Repository**: https://github.com/lalax-systems/file-extractor-mcp
-
-This project is part of the MCP tools ecosystem to improve productivity and automation in software development.
-
-## Contributions
-
-Contributions are welcome. Please open an issue or pull request on GitHub.
-
-## License
+## 📄 License
 
 MIT License - Copyright (c) 2026 Javier Gomez
+
+See [LICENSE](LICENSE) for full details.
+
+## 🌐 Links
+
+- **Repository**: https://github.com/lalax-systems/file-extractor-mcp
+- **Issues**: https://github.com/lalax-systems/file-extractor-mcp/issues
+- **MCP Documentation**: https://spec.modelcontextprotocol.io/
+
+## ⭐ Show Your Support
+
+If this project helps you, please give it a star on GitHub!
+
+---
+
+**Built with ❤️ by Javier Gomez**  
+*Making file management smarter with AI*
