@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/lalax-systems/file-extractor-mcp)
 
-An MCP (Model Context Protocol) server for extracting, organizing, and managing files between directories. Developed by **Javier Gomez** from **Lalax Systems**.
+An MCP (Model Context Protocol) server for extracting, organizing, and managing files between directories. Developed by **Javier Gomez**.
 
 ## Description
 
@@ -11,6 +11,22 @@ This MCP server provides tools for:
 - Extracting files from a source directory to a target directory
 - Listing files in a directory with pattern filters
 - Organizing files by extension, date, or size
+
+## Quick Example
+
+Here's how you can use this MCP server in your prompts:
+
+```
+Extract all JPG files from my photos directory to a backup folder:
+
+Use the extract_files tool with:
+- sourceDir: "/home/user/photos"
+- targetDir: "/home/user/backup"
+- pattern: "*.jpg"
+- recursive: true
+- move: false
+- conflictResolution: "rename"
+```
 
 ## Available Tools
 
@@ -196,11 +212,9 @@ recursive: false
 ## About
 
 **Developer**: Javier Gomez  
-**Company**: Lalax Systems  
-**Repository**: https://github.com/lalax-systems/file-extractor-mcp  
-**Website**: https://www.lalax.com
+**Repository**: https://github.com/lalax-systems/file-extractor-mcp
 
-This project is part of the MCP tools ecosystem developed by Lalax Systems to improve productivity and automation in software development.
+This project is part of the MCP tools ecosystem to improve productivity and automation in software development.
 
 ## Contributions
 
@@ -208,4 +222,4 @@ Contributions are welcome. Please open an issue or pull request on GitHub.
 
 ## License
 
-MIT License - Copyright (c) 2026 Javier Gomez - Lalax Systems
+MIT License - Copyright (c) 2026 Javier Gomez
