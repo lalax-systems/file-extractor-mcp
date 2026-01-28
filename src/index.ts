@@ -7,41 +7,41 @@ import path from 'path';
 import { createReadStream, createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
 
-// Crear un servidor MCP
+// Create an MCP server
 const server = new McpServer({
   name: "file-extractor",
   version: "0.1.0"
 });
 
-// Herramienta para extraer archivos de un directorio a otro
+// Tool for extracting files from one directory to another
 server.tool(
   "extract_files",
   {
-    sourceDir: z.string().describe("Ruta del directorio fuente"),
-    targetDir: z.string().describe("Ruta del directorio destino"),
-    pattern: z.string().optional().describe("Patrón de archivos a extraer (ej: *.jpg, *.txt)"),
-    recursive: z.boolean().optional().default(true).describe("Buscar recursivamente en subdirectorios"),
-    move: z.boolean().optional().default(false).describe("Mover archivos en lugar de copiar"),
-    conflictResolution: z.enum(["skip", "overwrite", "rename"]).optional().default("rename").describe("Cómo manejar conflictos de nombres")
+    sourceDir: z.string().describe("Path to the source directory"),
+    targetDir: z.string().describe("Path to the target directory"),
+    pattern: z.string().optional().describe("File pattern to extract (e.g., *.jpg, *.txt)"),
+    recursive: z.boolean().optional().default(true).describe("Search recursively in subdirectories"),
+    move: z.boolean().optional().default(false).describe("Move files instead of copying"),
+    conflictResolution: z.enum(["skip", "overwrite", "rename"]).optional().default("rename").describe("How to handle name conflicts")
   },
   async ({ sourceDir, targetDir, pattern, recursive, move, conflictResolution }) => {
     try {
-      // Validar directorios
+      // Validate directories
       const sourceStats = await fs.stat(sourceDir).catch(() => null);
       if (!sourceStats || !sourceStats.isDirectory()) {
         return {
           content: [{
             type: "text",
-            text: `Error: El directorio fuente '${sourceDir}' no existe o no es un directorio válido`
+            text: `Error: Source directory '${sourceDir}' does not exist or is not a valid directory`
           }],
           isError: true
         };
       }
 
-      // Crear directorio destino si no existe
+      // Create target directory if it doesn't exist
       await fs.mkdir(targetDir, { recursive: true });
 
-      // Función para procesar archivos
+      // Function to process files
       const processFiles = async (currentDir: string, relativePath = ""): Promise<{ processed: number; conflicts: number; errors: number }> => {
         let processed = 0;
         let conflicts = 0;
@@ -55,13 +55,13 @@ server.tool(
             const relativeEntryPath = path.join(relativePath, entry.name);
 
             if (entry.isDirectory() && recursive) {
-              // Procesar subdirectorio recursivamente
+              // Process subdirectory recursively
               const result = await processFiles(fullPath, relativeEntryPath);
               processed += result.processed;
               conflicts += result.conflicts;
               errors += result.errors;
             } else if (entry.isFile()) {
-              // Verificar patrón si se especificó
+              // Check pattern if specified
               if (pattern && !entry.name.match(convertPatternToRegex(pattern))) {
                 continue;
               }
@@ -69,10 +69,10 @@ server.tool(
               const targetPath = path.join(targetDir, relativeEntryPath);
               const targetDirPath = path.dirname(targetPath);
 
-              // Crear directorio destino si no existe
+              // Create target directory if it doesn't exist
               await fs.mkdir(targetDirPath, { recursive: true });
 
-              // Verificar si el archivo ya existe en destino
+              // Check if file already exists in target
               const targetExists = await fs.stat(targetPath).catch(() => false);
 
               if (targetExists) {
@@ -81,10 +81,10 @@ server.tool(
                   case "skip":
                     continue;
                   case "overwrite":
-                    // Continuar para sobrescribir
+                    // Continue to overwrite
                     break;
                   case "rename":
-                    // Generar nombre único
+                    // Generate unique name
                     const { name: baseName, ext } = path.parse(entry.name);
                     let counter = 1;
                     let newTargetPath = targetPath;
@@ -98,25 +98,25 @@ server.tool(
                 }
               }
 
-              // Copiar o mover el archivo
+              // Copy or move the file
               try {
                 await copyOrMoveFile(fullPath, targetPath, move);
                 processed++;
               } catch (error) {
                 errors++;
-                console.error(`Error procesando archivo ${fullPath}:`, error);
+                console.error(`Error processing file ${fullPath}:`, error);
               }
             }
           }
         } catch (error) {
           errors++;
-          console.error(`Error leyendo directorio ${currentDir}:`, error);
+          console.error(`Error reading directory ${currentDir}:`, error);
         }
 
         return { processed, conflicts, errors };
       };
 
-      // Función auxiliar para convertir patrón glob a regex
+      // Helper function to convert glob pattern to regex
       function convertPatternToRegex(pattern: string): RegExp {
         const escaped = pattern
           .replace(/\./g, '\\.')
@@ -125,7 +125,7 @@ server.tool(
         return new RegExp(`^${escaped}$`);
       }
 
-      // Función para copiar o mover archivo
+      // Function to copy or move file
       async function copyOrMoveFile(source: string, target: string, shouldMove: boolean): Promise<void> {
         if (shouldMove) {
           await fs.rename(source, target);
@@ -136,7 +136,7 @@ server.tool(
         }
       }
 
-      // Procesar archivos
+      // Process files
       const result = await processFiles(sourceDir);
 
       return {
@@ -144,7 +144,7 @@ server.tool(
           type: "text",
           text: JSON.stringify({
             success: true,
-            message: `Operación completada ${move ? 'moviendo' : 'copiando'} archivos`,
+            message: `Operation completed ${move ? 'moving' : 'copying'} files`,
             summary: {
               totalProcessed: result.processed,
               conflictsResolved: result.conflicts,
@@ -169,13 +169,13 @@ server.tool(
   }
 );
 
-// Herramienta para listar archivos en un directorio
+// Tool for listing files in a directory
 server.tool(
   "list_files",
   {
-    directory: z.string().describe("Ruta del directorio a listar"),
-    pattern: z.string().optional().describe("Patrón de archivos a listar (ej: *.jpg, *.txt)"),
-    recursive: z.boolean().optional().default(false).describe("Listar recursivamente")
+    directory: z.string().describe("Path to the directory to list"),
+    pattern: z.string().optional().describe("File pattern to list (e.g., *.jpg, *.txt)"),
+    recursive: z.boolean().optional().default(false).describe("List recursively")
   },
   async ({ directory, pattern, recursive }) => {
     try {
@@ -184,7 +184,7 @@ server.tool(
         return {
           content: [{
             type: "text",
-            text: `Error: El directorio '${directory}' no existe o no es un directorio válido`
+            text: `Error: Directory '${directory}' does not exist or is not a valid directory`
           }],
           isError: true
         };
@@ -210,7 +210,7 @@ server.tool(
             await listFilesRecursive(fullPath, relativeEntryPath);
           }
 
-          // Verificar patrón si se especificó
+          // Check pattern if specified
           if (pattern && !entry.name.match(convertPatternToRegex(pattern))) {
             continue;
           }
@@ -258,13 +258,13 @@ server.tool(
   }
 );
 
-// Herramienta para organizar archivos por tipo
+// Tool for organizing files by type
 server.tool(
   "organize_files",
   {
-    sourceDir: z.string().describe("Ruta del directorio fuente"),
-    targetDir: z.string().optional().describe("Ruta del directorio destino (opcional, por defecto mismo directorio)"),
-    organizeBy: z.enum(["extension", "date", "size"]).default("extension").describe("Criterio de organización")
+    sourceDir: z.string().describe("Path to the source directory"),
+    targetDir: z.string().optional().describe("Path to the target directory (optional, default: same directory)"),
+    organizeBy: z.enum(["extension", "date", "size"]).default("extension").describe("Organization criteria")
   },
   async ({ sourceDir, targetDir, organizeBy }) => {
     try {
@@ -274,7 +274,7 @@ server.tool(
         return {
           content: [{
             type: "text",
-            text: `Error: El directorio '${sourceDir}' no existe o no es un directorio válido`
+            text: `Error: Directory '${sourceDir}' does not exist or is not a valid directory`
           }],
           isError: true
         };
@@ -295,7 +295,7 @@ server.tool(
           let categoryDir = "";
           switch (organizeBy) {
             case "extension":
-              const ext = path.extname(entry.name).toLowerCase() || "sin_extension";
+              const ext = path.extname(entry.name).toLowerCase() || "no_extension";
               categoryDir = ext.startsWith('.') ? ext.slice(1) : ext;
               break;
             case "date":
@@ -304,10 +304,10 @@ server.tool(
               break;
             case "size":
               const sizeInMB = stats.size / (1024 * 1024);
-              if (sizeInMB < 1) categoryDir = "pequenos_<1MB";
-              else if (sizeInMB < 10) categoryDir = "medianos_1-10MB";
-              else if (sizeInMB < 100) categoryDir = "grandes_10-100MB";
-              else categoryDir = "enormes_>100MB";
+              if (sizeInMB < 1) categoryDir = "small_<1MB";
+              else if (sizeInMB < 10) categoryDir = "medium_1-10MB";
+              else if (sizeInMB < 100) categoryDir = "large_10-100MB";
+              else categoryDir = "huge_>100MB";
               break;
           }
 
@@ -319,7 +319,7 @@ server.tool(
           organized++;
         } catch (error) {
           errors++;
-          console.error(`Error organizando archivo ${entry.name}:`, error);
+          console.error(`Error organizing file ${entry.name}:`, error);
         }
       }
 
@@ -328,7 +328,7 @@ server.tool(
           type: "text",
           text: JSON.stringify({
             success: true,
-            message: `Archivos organizados por ${organizeBy}`,
+            message: `Files organized by ${organizeBy}`,
             summary: {
               totalFiles: files.length,
               organized,
@@ -353,7 +353,7 @@ server.tool(
   }
 );
 
-// Iniciar el servidor
+// Start the server
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
