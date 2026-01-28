@@ -153,7 +153,7 @@ This MCP server is compatible with any VSCode fork that supports MCP servers. Ad
 npm install -g @lalax-systems/file-extractor-mcp
 ```
 
-The server runs automatically when Kilo Code or compatible editors start.
+The server runs automatically when connected to an MCP-compatible client.
 
 ## Project Structure
 
@@ -174,7 +174,7 @@ To modify the server:
 
 1. Edit the `src/index.ts` file
 2. Run `npm run build` to compile
-3. Restart Kilo Code or your editor to load changes
+3. Restart your MCP client to load changes
 
 ## Usage Examples
 
