@@ -177,7 +177,7 @@ extract_files({
 
 Para problemas o preguntas:
 - Abre un issue en GitHub: https://github.com/lalax-systems/file-extractor-mcp/issues
-- Contacta al desarrollador: javier@lalax.systems
+- Contacta al desarrollador: info@lalax.com
 
 ## Contribuciones
 
