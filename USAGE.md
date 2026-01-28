@@ -1,54 +1,99 @@
-# Uso del File Extractor MCP Server
+# File Extractor MCP Server Usage Guide
 
-Esta guía explica cómo usar el File Extractor MCP Server en diferentes entornos.
+This guide explains how to use the File Extractor MCP Server in different environments.
 
-## Configuración Rápida
+## Quick Setup
 
-### 1. Instalación Local
+### 1. Local Installation
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/lalax-systems/file-extractor-mcp.git
 cd file-extractor-mcp
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Compilar el proyecto
+# Build the project
 npm run build
 ```
 
-### 2. Configuración en Kilo Code
+### 2. Configuration in Kilo Code
 
-Edita el archivo de configuración MCP (`mcp_settings.json`) y agrega:
+Edit the MCP configuration file (`mcp_settings.json`) and add:
 
 ```json
 {
   "mcpServers": {
     "file-extractor": {
       "command": "node",
-      "args": ["/ruta/completa/a/file-extractor-mcp/build/index.js"],
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
       "disabled": false,
       "alwaysAllow": [],
-      "description": "MCP server para extraer archivos de directorios y moverlos a otro directorio"
+      "description": "MCP server for extracting files from directories and moving them to another directory"
     }
   }
 }
 ```
 
-### 3. Reiniciar Kilo Code
+### 3. Configuration in VSCode Forks
 
-Reinicia Kilo Code para que cargue el nuevo servidor MCP.
+This MCP server is compatible with any VSCode fork that supports MCP servers:
 
-## Ejemplos de Uso
+**Cursor**: `~/.cursor/mcp.json`
+```json
+{
+  "mcpServers": {
+    "file-extractor": {
+      "command": "node",
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
+      "disabled": false
+    }
+  }
+}
+```
 
-### Ejemplo 1: Extraer todas las imágenes JPG
+**Windsurf**: `~/.windsurf/mcp.json`
+```json
+{
+  "mcpServers": {
+    "file-extractor": {
+      "command": "node",
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
+      "disabled": false
+    }
+  }
+}
+```
+
+**Cline**: `~/.cline/mcp.json`
+```json
+{
+  "mcpServers": {
+    "file-extractor": {
+      "command": "node",
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
+      "disabled": false
+    }
+  }
+}
+```
+
+**Other VSCode forks**: Check your editor's documentation for MCP configuration file location.
+
+### 4. Restart Your Editor
+
+Restart Kilo Code or your compatible editor to load the new MCP server.
+
+## Usage Examples
+
+### Example 1: Extract all JPG images
 
 ```bash
-# Usando el tool extract_files
+# Using the extract_files tool
 {
-  "sourceDir": "/home/usuario/fotos",
-  "targetDir": "/home/usuario/backup",
+  "sourceDir": "/home/user/photos",
+  "targetDir": "/home/user/backup",
   "pattern": "*.jpg",
   "recursive": true,
   "move": false,
@@ -56,68 +101,68 @@ Reinicia Kilo Code para que cargue el nuevo servidor MCP.
 }
 ```
 
-### Ejemplo 2: Organizar documentos por extensión
+### Example 2: Organize documents by extension
 
 ```bash
-# Usando el tool organize_files
+# Using the organize_files tool
 {
-  "sourceDir": "/home/usuario/descargas",
+  "sourceDir": "/home/user/downloads",
   "organizeBy": "extension"
 }
 ```
 
-### Ejemplo 3: Listar archivos PDF en un directorio
+### Example 3: List PDF files in a directory
 
 ```bash
-# Usando el tool list_files
+# Using the list_files tool
 {
-  "directory": "/home/usuario/documentos",
+  "directory": "/home/user/documents",
   "pattern": "*.pdf",
   "recursive": false
 }
 ```
 
-## Herramientas Disponibles
+## Available Tools
 
 ### 1. `extract_files`
 
-Extrae archivos de un directorio fuente a un directorio destino.
+Extracts files from a source directory to a target directory.
 
-**Parámetros:**
-- `sourceDir`: Ruta del directorio fuente (requerido)
-- `targetDir`: Ruta del directorio destino (requerido)
-- `pattern`: Patrón de archivos (ej: `*.jpg`, `*.txt`) (opcional)
-- `recursive`: Buscar en subdirectorios (default: `true`)
-- `move`: Mover en lugar de copiar (default: `false`)
-- `conflictResolution`: Manejo de conflictos (`skip`, `overwrite`, `rename`) (default: `rename`)
+**Parameters:**
+- `sourceDir`: Path to source directory (required)
+- `targetDir`: Path to target directory (required)
+- `pattern`: File pattern (e.g., `*.jpg`, `*.txt`) (optional)
+- `recursive`: Search in subdirectories (default: `true`)
+- `move`: Move instead of copy (default: `false`)
+- `conflictResolution`: Conflict handling (`skip`, `overwrite`, `rename`) (default: `rename`)
 
 ### 2. `list_files`
 
-Lista archivos en un directorio con información detallada.
+Lists files in a directory with detailed information.
 
-**Parámetros:**
-- `directory`: Ruta del directorio (requerido)
-- `pattern`: Patrón de archivos (opcional)
-- `recursive`: Listar recursivamente (default: `false`)
+**Parameters:**
+- `directory`: Path to directory (required)
+- `pattern`: File pattern (optional)
+- `recursive`: List recursively (default: `false`)
 
 ### 3. `organize_files`
 
-Organiza archivos por criterio específico.
+Organizes files by specific criteria.
 
-**Parámetros:**
-- `sourceDir`: Ruta del directorio fuente (requerido)
-- `targetDir`: Ruta del directorio destino (opcional, default: mismo directorio)
-- `organizeBy`: Criterio (`extension`, `date`, `size`) (default: `extension`)
+**Parameters:**
+- `sourceDir`: Path to source directory (required)
+- `targetDir`: Path to target directory (optional, default: same directory)
+- `organizeBy`: Criteria (`extension`, `date`, `size`) (default: `extension`)
 
-## Casos de Uso Comunes
+## Common Use Cases
 
-### 1. Backup de Fotos
+### 1. Photo Backup
 
 ```bash
-# Copiar todas las fotos a un directorio de backup
+# Copy all photos to a backup directory
 extract_files({
-  sourceDir: "/home/usuario/fotos",
-  targetDir: "/backup/fotos",
+  sourceDir: "/home/user/photos",
+  targetDir: "/backup/photos",
   pattern: "*.{jpg,png,gif}",
   recursive: true,
   move: false,
@@ -125,23 +170,23 @@ extract_files({
 })
 ```
 
-### 2. Organizar Descargas
+### 2. Download Organization
 
 ```bash
-# Organizar archivos descargados por tipo
+# Organize downloaded files by type
 organize_files({
-  sourceDir: "/home/usuario/descargas",
+  sourceDir: "/home/user/downloads",
   organizeBy: "extension"
 })
 ```
 
-### 3. Limpieza de Temporales
+### 3. Temporary File Cleanup
 
 ```bash
-# Mover archivos temporales antiguos
+# Move old temporary files
 extract_files({
   sourceDir: "/tmp",
-  targetDir: "/home/usuario/temp_backup",
+  targetDir: "/home/user/temp_backup",
   pattern: "*.tmp",
   recursive: true,
   move: true,
@@ -149,40 +194,40 @@ extract_files({
 })
 ```
 
-## Solución de Problemas
+## Troubleshooting
 
-### Error: "El directorio no existe"
-- Verifica que la ruta sea correcta
-- Asegúrate de que el directorio exista
-- Verifica los permisos de lectura/escritura
+### Error: "Directory does not exist"
+- Verify the path is correct
+- Ensure the directory exists
+- Check read/write permissions
 
-### Error: "Permiso denegado"
-- Ejecuta con permisos adecuados
-- Verifica los permisos del directorio
-- Considera usar `sudo` si es necesario
+### Error: "Permission denied"
+- Run with appropriate permissions
+- Check directory permissions
+- Consider using `sudo` if necessary
 
-### El servidor no se inicia
-- Verifica que Node.js esté instalado (versión 18+)
-- Revisa que todas las dependencias estén instaladas
-- Verifica la ruta en la configuración MCP
+### Server doesn't start
+- Verify Node.js is installed (version 18+)
+- Check all dependencies are installed
+- Verify the path in MCP configuration
 
-## Mejores Prácticas
+## Best Practices
 
-1. **Siempre haz backup** antes de usar `move: true`
-2. **Prueba con `recursive: false`** primero para ver los resultados
-3. **Usa `conflictResolution: "rename"`** para evitar sobrescribir archivos importantes
-4. **Verifica los patrones** con `list_files` antes de extraer
+1. **Always make backups** before using `move: true`
+2. **Test with `recursive: false`** first to see results
+3. **Use `conflictResolution: "rename"`** to avoid overwriting important files
+4. **Verify patterns** with `list_files` before extracting
 
-## Soporte
+## Support
 
-Para problemas o preguntas:
-- Abre un issue en GitHub: https://github.com/lalax-systems/file-extractor-mcp/issues
-- Contacta al desarrollador: info@lalax.com
+For issues or questions:
+- Open an issue on GitHub: https://github.com/lalax-systems/file-extractor-mcp/issues
+- Contact the developer: info@lalax.com
 
-## Contribuciones
+## Contributions
 
-Las contribuciones son bienvenidas. Por favor:
-1. Fork el repositorio
-2. Crea una rama para tu feature
-3. Haz commit de tus cambios
-4. Abre un Pull Request
+Contributions are welcome. Please:
+1. Fork the repository
+2. Create a branch for your feature
+3. Commit your changes
+4. Open a Pull Request
