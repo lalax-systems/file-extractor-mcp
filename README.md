@@ -3,8 +3,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/lalax-systems/file-extractor-mcp)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://spec.modelcontextprotocol.io/)
+[![Version](https://img.shields.io/badge/Version-0.2.0-orange.svg)](https://github.com/lalax-systems/file-extractor-mcp)
 
-**Professional MCP server for file management and automation** - Extract, organize, and manage files between directories with AI-powered tools. Developed by **Javier Gomez**.
+**Professional MCP server for file management and GitHub repository automation** - Extract, organize, and manage files between directories with AI-powered tools. Developed by **Javier Gomez**.
 
 ## 🚀 Quick Start
 
@@ -46,7 +47,18 @@ Extract all JPG and PNG files from my camera folder to a backup directory:
 - conflictResolution: "rename"
 ```
 
-### Example 2: Organize Downloads
+### Example 2: Clean GitHub Repositories
+```
+I want to delete all my GitHub repositories except "file-extractor-mcp":
+
+Use the delete_all_github_repositories_except tool with:
+- token: "github_pat_..."
+- username: "lalax-systems"
+- keepRepository: "file-extractor-mcp"
+- confirm: true
+```
+
+### Example 3: Organize Downloads
 ```
 My downloads folder is a mess. Please organize all files by extension:
 
@@ -55,19 +67,11 @@ Use the organize_files tool with:
 - organizeBy: "extension"
 ```
 
-### Example 3: Find Large Files
-```
-I need to find all large video files for cleanup:
-
-Use the list_files tool with:
-- directory: "/home/user/videos"
-- pattern: "*.{mp4,avi,mkv}"
-- recursive: true
-```
-
 ## 🔧 Available Tools
 
-### 1. `extract_files` - Smart File Extraction
+### 📁 **File Management Tools**
+
+#### 1. `extract_files` - Smart File Extraction
 Extract files with pattern matching and conflict resolution.
 
 **Parameters:**
@@ -78,7 +82,7 @@ Extract files with pattern matching and conflict resolution.
 - `move` (boolean, optional): Move instead of copy (default: `false`)
 - `conflictResolution` (string, optional): `"skip"`, `"overwrite"`, or `"rename"` (default)
 
-### 2. `list_files` - Directory Analysis
+#### 2. `list_files` - Directory Analysis
 List files with filtering and detailed information.
 
 **Parameters:**
@@ -86,13 +90,53 @@ List files with filtering and detailed information.
 - `pattern` (string, optional): Filter pattern
 - `recursive` (boolean, optional): Recursive listing (default: `false`)
 
-### 3. `organize_files` - Automated Organization
+#### 3. `organize_files` - Automated Organization
 Organize files by extension, date, or size.
 
 **Parameters:**
 - `sourceDir` (string): Source directory
 - `targetDir` (string, optional): Target directory (default: same as source)
 - `organizeBy` (string, optional): `"extension"` (default), `"date"`, or `"size"`
+
+### 🐙 **GitHub Management Tools**
+
+#### 4. `list_github_repositories` - Repository Listing
+List all GitHub repositories for a user.
+
+**Parameters:**
+- `token` (string): GitHub Personal Access Token (with `repo` scope)
+- `username` (string, optional): GitHub username (default: authenticated user)
+
+#### 5. `delete_github_repository` - Single Repository Deletion
+Delete a specific GitHub repository.
+
+**Parameters:**
+- `token` (string): GitHub Personal Access Token (with `repo` scope)
+- `owner` (string): Repository owner (user or organization)
+- `repo` (string): Repository name to delete
+- `confirm` (boolean): Must be `true` to proceed (safety measure)
+
+#### 6. `delete_all_github_repositories_except` - Bulk Repository Cleanup
+Delete all repositories except one specified repository.
+
+**Parameters:**
+- `token` (string): GitHub Personal Access Token (with `repo` scope)
+- `username` (string): GitHub username
+- `keepRepository` (string): Repository name to keep (not delete)
+- `confirm` (boolean): Must be `true` to proceed (safety measure)
+
+## ⚠️ **Important Security Notes**
+
+### GitHub Token Requirements:
+- **Scope**: `repo` (full control of private repositories)
+- **Permissions**: Delete repositories
+- **Safety**: Tokens should be kept secure and never shared
+
+### Deletion Safety Features:
+1. **Confirmation Required**: `confirm: true` parameter is mandatory
+2. **Selective Deletion**: Can keep specific repositories
+3. **Error Handling**: Detailed error messages for failed operations
+4. **Audit Trail**: Returns detailed results of all operations
 
 ## 📊 Real-World Use Cases
 
@@ -105,7 +149,16 @@ pattern: "*.{jpg,raw,cr2}"
 recursive: true
 ```
 
-### 📁 **Project Cleanup**
+### 🧹 **GitHub Account Cleanup**
+```bash
+# Keep only the main project
+token: "github_pat_..."
+username: "lalax-systems"
+keepRepository: "file-extractor-mcp"
+confirm: true
+```
+
+### 📁 **Project Archive**
 ```bash
 # Archive old project files
 sourceDir: "/projects/old-project"
@@ -114,21 +167,16 @@ pattern: "*.{log,tmp,bak}"
 move: true
 ```
 
-### 🗄️ **Document Organization**
-```bash
-# Organize work documents
-sourceDir: "/work/documents"
-organizeBy: "extension"
-```
-
 ## 🛠️ Technical Features
 
 - **✅ Recursive Operations**: Process nested directories automatically
 - **✅ Pattern Matching**: Support for glob patterns (`*.jpg`, `*.{txt,md}`)
 - **✅ Conflict Resolution**: Skip, overwrite, or rename duplicate files
+- **✅ GitHub Integration**: Full repository management via Octokit
 - **✅ Cross-Platform**: Works on Windows, macOS, and Linux
 - **✅ MCP Standard**: Compatible with any MCP client
 - **✅ TypeScript**: Full type safety and modern development
+- **✅ Safety First**: Confirmation required for destructive operations
 
 ## 📋 Compatibility
 
@@ -180,16 +228,22 @@ The tools will be available in your AI agent's prompt interface.
 
 ## 🔍 Advanced Examples
 
-### Batch Processing
+### GitHub Token Creation
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with `repo` scope (full control)
+3. Copy the token and use it in the tools
+
+### Bulk Repository Management
 ```bash
-# Process multiple directories
-for dir in /data/*/; do
-  # Extract PDFs from each directory
-  sourceDir: "$dir"
-  targetDir: "/archive/pdfs"
-  pattern: "*.pdf"
-  recursive: true
-done
+# List all repositories first
+token: "github_pat_..."
+username: "lalax-systems"
+
+# Then delete all except one
+token: "github_pat_..."
+username: "lalax-systems"
+keepRepository: "file-extractor-mcp"
+confirm: true
 ```
 
 ### Automated Backup Script
@@ -209,6 +263,7 @@ conflictResolution: "rename"
 - **Reliable**: Comprehensive error handling and logging
 - **Scalable**: Handles thousands of files efficiently
 - **Safe**: Non-destructive operations by default
+- **Secure**: GitHub operations require explicit confirmation
 
 ## 🤝 Contributing
 
@@ -231,6 +286,14 @@ See [LICENSE](LICENSE) for full details.
 - **Issues**: https://github.com/lalax-systems/file-extractor-mcp/issues
 - **MCP Documentation**: https://spec.modelcontextprotocol.io/
 
+## ⚠️ **Warning**
+
+**GitHub repository deletion is permanent and irreversible.** Use the deletion tools with extreme caution. Always:
+1. Backup important repositories
+2. Double-check repository names
+3. Use the `confirm: true` parameter carefully
+4. Consider archiving instead of deleting
+
 ## ⭐ Show Your Support
 
 If this project helps you, please give it a star on GitHub!
@@ -238,4 +301,4 @@ If this project helps you, please give it a star on GitHub!
 ---
 
 **Built with ❤️ by Javier Gomez**  
-*Making file management smarter with AI*
+*Making file and repository management smarter with AI*
