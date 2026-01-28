@@ -1,233 +1,315 @@
-# File Extractor MCP Server Usage Guide
+# Usage Guide - File Extractor MCP Server
 
-This guide explains how to use the File Extractor MCP Server in different environments.
+This guide provides detailed instructions on how to use the File Extractor MCP Server tools effectively.
 
-## Quick Setup
+## Table of Contents
 
-### 1. Local Installation
+1. [Introduction](#introduction)
+2. [Tool Overview](#tool-overview)
+3. [extract_files Tool](#extract_files-tool)
+4. [list_files Tool](#list_files-tool)
+5. [organize_files Tool](#organize_files-tool)
+6. [Examples](#examples)
+7. [Troubleshooting](#troubleshooting)
 
-```bash
-# Clone the repository
-git clone https://github.com/lalax-systems/file-extractor-mcp.git
-cd file-extractor-mcp
+## Introduction
 
-# Install dependencies
-npm install
+The File Extractor MCP Server provides three main tools for file management operations. These tools can be accessed through any MCP-compatible client like Kilo Code, Cursor, Windsurf, or Cline.
 
-# Build the project
-npm run build
-```
+## Tool Overview
 
-### 2. Configuration in Kilo Code
+### 1. `extract_files`
+Extracts files matching a pattern from a source directory to a target directory.
 
-Edit the MCP configuration file (`mcp_settings.json`) and add:
+### 2. `list_files`
+Lists files in a directory with optional filtering.
 
+### 3. `organize_files`
+Organizes files by extension, date, or size.
+
+## extract_files Tool
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `sourceDir` | string | Yes | - | Path to the source directory |
+| `targetDir` | string | Yes | - | Path to the target directory |
+| `pattern` | string | No | `*` (all files) | File pattern to extract (e.g., `*.jpg`, `*.txt`) |
+| `recursive` | boolean | No | `true` | Search recursively in subdirectories |
+| `move` | boolean | No | `false` | Move files instead of copying |
+| `conflictResolution` | string | No | `"rename"` | How to handle name conflicts: `"skip"`, `"overwrite"`, or `"rename"` |
+
+### Conflict Resolution Strategies
+
+1. **`"skip"`**: Skip files with duplicate names
+   - Example: If `photo.jpg` already exists in target, skip the source file
+   - Useful for non-destructive operations
+
+2. **`"overwrite"`**: Overwrite existing files
+   - Example: Replace existing `photo.jpg` with the source file
+   - Use with caution as data may be lost
+
+3. **`"rename"`**: Rename files with numerical suffix (default)
+   - Example: `photo.jpg` → `photo (1).jpg`, `photo (2).jpg`, etc.
+   - Safest option, preserves all files
+
+### Pattern Examples
+
+- `*.jpg` - All JPG files
+- `*.txt` - All text files
+- `*.pdf` - All PDF files
+- `*.{jpg,png,gif}` - Multiple image formats
+- `report_*.docx` - Word documents starting with "report_"
+- `2024-*.xlsx` - Excel files starting with "2024-"
+
+### Usage Examples
+
+**Basic extraction:**
 ```json
 {
-  "mcpServers": {
-    "file-extractor": {
-      "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
-      "disabled": false,
-      "alwaysAllow": [],
-      "description": "MCP server for extracting files from directories and moving them to another directory"
-    }
-  }
-}
-```
-
-### 3. Configuration in VSCode Forks
-
-This MCP server is compatible with any VSCode fork that supports MCP servers:
-
-**Cursor**: `~/.cursor/mcp.json`
-```json
-{
-  "mcpServers": {
-    "file-extractor": {
-      "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
-      "disabled": false
-    }
-  }
-}
-```
-
-**Windsurf**: `~/.windsurf/mcp.json`
-```json
-{
-  "mcpServers": {
-    "file-extractor": {
-      "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
-      "disabled": false
-    }
-  }
-}
-```
-
-**Cline**: `~/.cline/mcp.json`
-```json
-{
-  "mcpServers": {
-    "file-extractor": {
-      "command": "node",
-      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
-      "disabled": false
-    }
-  }
-}
-```
-
-**Other VSCode forks**: Check your editor's documentation for MCP configuration file location.
-
-### 4. Restart Your Editor
-
-Restart Kilo Code or your compatible editor to load the new MCP server.
-
-## Usage Examples
-
-### Example 1: Extract all JPG images
-
-```bash
-# Using the extract_files tool
-{
-  "sourceDir": "/home/user/photos",
+  "sourceDir": "/home/user/documents",
   "targetDir": "/home/user/backup",
-  "pattern": "*.jpg",
+  "pattern": "*.pdf",
   "recursive": true,
   "move": false,
   "conflictResolution": "rename"
 }
 ```
 
-### Example 2: Organize documents by extension
-
-```bash
-# Using the organize_files tool
+**Move files instead of copy:**
+```json
 {
   "sourceDir": "/home/user/downloads",
-  "organizeBy": "extension"
+  "targetDir": "/home/user/archive",
+  "pattern": "*.tmp",
+  "recursive": true,
+  "move": true,
+  "conflictResolution": "overwrite"
 }
 ```
 
-### Example 3: List PDF files in a directory
+**Non-recursive extraction:**
+```json
+{
+  "sourceDir": "/home/user/photos",
+  "targetDir": "/home/user/selected",
+  "pattern": "*.jpg",
+  "recursive": false,
+  "move": false,
+  "conflictResolution": "skip"
+}
+```
 
-```bash
-# Using the list_files tool
+## list_files Tool
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `directory` | string | Yes | - | Path to the directory to list |
+| `pattern` | string | No | `*` (all files) | File pattern to list |
+| `recursive` | boolean | No | `false` | List recursively |
+
+### Return Value
+
+Returns an array of file objects with the following structure:
+```json
+[
+  {
+    "name": "file1.jpg",
+    "path": "/full/path/to/file1.jpg",
+    "size": 1024,
+    "type": "file"
+  },
+  {
+    "name": "subdirectory",
+    "path": "/full/path/to/subdirectory",
+    "type": "directory"
+  }
+]
+```
+
+### Usage Examples
+
+**List all files in a directory:**
+```json
 {
   "directory": "/home/user/documents",
-  "pattern": "*.pdf",
+  "pattern": "*",
   "recursive": false
 }
 ```
 
-## Available Tools
-
-### 1. `extract_files`
-
-Extracts files from a source directory to a target directory.
-
-**Parameters:**
-- `sourceDir`: Path to source directory (required)
-- `targetDir`: Path to target directory (required)
-- `pattern`: File pattern (e.g., `*.jpg`, `*.txt`) (optional)
-- `recursive`: Search in subdirectories (default: `true`)
-- `move`: Move instead of copy (default: `false`)
-- `conflictResolution`: Conflict handling (`skip`, `overwrite`, `rename`) (default: `rename`)
-
-### 2. `list_files`
-
-Lists files in a directory with detailed information.
-
-**Parameters:**
-- `directory`: Path to directory (required)
-- `pattern`: File pattern (optional)
-- `recursive`: List recursively (default: `false`)
-
-### 3. `organize_files`
-
-Organizes files by specific criteria.
-
-**Parameters:**
-- `sourceDir`: Path to source directory (required)
-- `targetDir`: Path to target directory (optional, default: same directory)
-- `organizeBy`: Criteria (`extension`, `date`, `size`) (default: `extension`)
-
-## Common Use Cases
-
-### 1. Photo Backup
-
-```bash
-# Copy all photos to a backup directory
-extract_files({
-  sourceDir: "/home/user/photos",
-  targetDir: "/backup/photos",
-  pattern: "*.{jpg,png,gif}",
-  recursive: true,
-  move: false,
-  conflictResolution: "rename"
-})
+**List PDF files recursively:**
+```json
+{
+  "directory": "/home/user/projects",
+  "pattern": "*.pdf",
+  "recursive": true
+}
 ```
 
-### 2. Download Organization
-
-```bash
-# Organize downloaded files by type
-organize_files({
-  sourceDir: "/home/user/downloads",
-  organizeBy: "extension"
-})
+**List image files:**
+```json
+{
+  "directory": "/home/user/photos",
+  "pattern": "*.{jpg,png,gif}",
+  "recursive": true
+}
 ```
 
-### 3. Temporary File Cleanup
+## organize_files Tool
 
-```bash
-# Move old temporary files
-extract_files({
-  sourceDir: "/tmp",
-  targetDir: "/home/user/temp_backup",
-  pattern: "*.tmp",
-  recursive: true,
-  move: true,
-  conflictResolution: "overwrite"
-})
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `sourceDir` | string | Yes | - | Path to the source directory |
+| `targetDir` | string | No | Same as source | Path to the target directory |
+| `organizeBy` | string | No | `"extension"` | Organization criteria: `"extension"`, `"date"`, or `"size"` |
+
+### Organization Methods
+
+1. **`"extension"`** (default):
+   - Files are organized into folders named after their extensions
+   - Example: `.jpg` files go to `jpg/`, `.pdf` files go to `pdf/`, etc.
+   - Structure: `targetDir/jpg/file1.jpg`, `targetDir/pdf/document.pdf`
+
+2. **`"date"`**:
+   - Files are organized by modification date (year-month)
+   - Example: Files modified in January 2024 go to `2024-01/`
+   - Structure: `targetDir/2024-01/file1.jpg`, `targetDir/2024-02/document.pdf`
+
+3. **`"size"`**:
+   - Files are organized by size categories:
+     - `tiny/`: < 1KB
+     - `small/`: 1KB - 1MB
+     - `medium/`: 1MB - 100MB
+     - `large/`: > 100MB
+   - Structure: `targetDir/small/file1.txt`, `targetDir/large/video.mp4`
+
+### Usage Examples
+
+**Organize by extension:**
+```json
+{
+  "sourceDir": "/home/user/downloads",
+  "targetDir": "/home/user/organized",
+  "organizeBy": "extension"
+}
+```
+
+**Organize by date in same directory:**
+```json
+{
+  "sourceDir": "/home/user/photos",
+  "organizeBy": "date"
+}
+```
+
+**Organize by size:**
+```json
+{
+  "sourceDir": "/home/user/data",
+  "targetDir": "/home/user/sorted",
+  "organizeBy": "size"
+}
+```
+
+## Examples
+
+### Example 1: Backup Photos
+
+**Scenario**: Backup all photos from a camera to an external drive.
+
+```json
+{
+  "sourceDir": "/media/camera/DCIM",
+  "targetDir": "/media/external/backup/photos",
+  "pattern": "*.{jpg,jpeg,png,raw}",
+  "recursive": true,
+  "move": false,
+  "conflictResolution": "rename"
+}
+```
+
+### Example 2: Clean Temporary Files
+
+**Scenario**: Move all temporary files to a trash folder.
+
+```json
+{
+  "sourceDir": "/home/user/project",
+  "targetDir": "/home/user/trash",
+  "pattern": "*.{tmp,log,bak}",
+  "recursive": true,
+  "move": true,
+  "conflictResolution": "overwrite"
+}
+```
+
+### Example 3: Organize Downloads Folder
+
+**Scenario**: Organize downloads by file type.
+
+```json
+{
+  "sourceDir": "/home/user/Downloads",
+  "targetDir": "/home/user/Downloads_organized",
+  "organizeBy": "extension"
+}
+```
+
+### Example 4: Find Large Files
+
+**Scenario**: List all large video files.
+
+```json
+{
+  "directory": "/home/user/videos",
+  "pattern": "*.{mp4,avi,mkv,mov}",
+  "recursive": true
+}
 ```
 
 ## Troubleshooting
 
-### Error: "Directory does not exist"
-- Verify the path is correct
-- Ensure the directory exists
-- Check read/write permissions
+### Common Issues
 
-### Error: "Permission denied"
-- Run with appropriate permissions
-- Check directory permissions
-- Consider using `sudo` if necessary
+1. **Permission Denied**
+   - Ensure you have read access to source directory
+   - Ensure you have write access to target directory
 
-### Server doesn't start
-- Verify Node.js is installed (version 18+)
-- Check all dependencies are installed
-- Verify the path in MCP configuration
+2. **Directory Not Found**
+   - Verify paths are correct and exist
+   - Use absolute paths for reliability
 
-## Best Practices
+3. **No Files Found**
+   - Check if pattern matches file extensions
+   - Verify recursive setting if files are in subdirectories
 
-1. **Always make backups** before using `move: true`
-2. **Test with `recursive: false`** first to see results
-3. **Use `conflictResolution: "rename"`** to avoid overwriting important files
-4. **Verify patterns** with `list_files` before extracting
+4. **Conflict Resolution Not Working as Expected**
+   - Understand the difference between skip, overwrite, and rename
+   - Check if target directory already contains files with same names
+
+### Best Practices
+
+1. **Test First**: Use `list_files` to see what files will be affected
+2. **Backup**: Always have a backup before using `move: true`
+3. **Use Absolute Paths**: More reliable than relative paths
+4. **Start Small**: Test with a small directory first
+5. **Monitor Progress**: Large operations may take time
+
+### Error Messages
+
+- `ENOENT: no such file or directory` - Check if source/target directories exist
+- `EACCES: permission denied` - Check file permissions
+- `Pattern syntax error` - Check pattern format (e.g., `*.{jpg,png}` not `*.{jpg,png}`)
+- `Target directory is inside source directory` - Avoid recursive copying
 
 ## Support
 
-For issues or questions:
-- Open an issue on GitHub: https://github.com/lalax-systems/file-extractor-mcp/issues
-- Contact the developer: info@lalax.com
+For issues or questions, please visit the [GitHub repository](https://github.com/lalax-systems/file-extractor-mcp) or contact the developer.
 
-## Contributions
-
-Contributions are welcome. Please:
-1. Fork the repository
-2. Create a branch for your feature
-3. Commit your changes
-4. Open a Pull Request
+**Developer**: Javier Gomez
