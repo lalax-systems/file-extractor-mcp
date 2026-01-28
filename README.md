@@ -3,36 +3,36 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue.svg)](https://github.com/lalax-systems/file-extractor-mcp)
 
-Un servidor MCP (Model Context Protocol) para extraer, organizar y gestionar archivos entre directorios. Desarrollado por **Javier Gomez** desde **Lalax Systems**.
+An MCP (Model Context Protocol) server for extracting, organizing, and managing files between directories. Developed by **Javier Gomez** from **Lalax Systems**.
 
-## Descripción
+## Description
 
-Este servidor MCP proporciona herramientas para:
-- Extraer archivos de un directorio fuente a un directorio destino
-- Listar archivos en un directorio con filtros por patrón
-- Organizar archivos por extensión, fecha o tamaño
+This MCP server provides tools for:
+- Extracting files from a source directory to a target directory
+- Listing files in a directory with pattern filters
+- Organizing files by extension, date, or size
 
-## Herramientas Disponibles
+## Available Tools
 
 ### 1. `extract_files`
-Extrae archivos de un directorio fuente a un directorio destino.
+Extracts files from a source directory to a target directory.
 
-**Parámetros:**
-- `sourceDir` (string): Ruta del directorio fuente
-- `targetDir` (string): Ruta del directorio destino
-- `pattern` (string, opcional): Patrón de archivos a extraer (ej: `*.jpg`, `*.txt`)
-- `recursive` (boolean, opcional): Buscar recursivamente en subdirectorios (default: `true`)
-- `move` (boolean, opcional): Mover archivos en lugar de copiar (default: `false`)
-- `conflictResolution` (string, opcional): Cómo manejar conflictos de nombres:
-  - `"skip"`: Saltar archivos con nombres duplicados
-  - `"overwrite"`: Sobrescribir archivos existentes
-  - `"rename"`: Renombrar archivos con sufijo numérico (default)
+**Parameters:**
+- `sourceDir` (string): Path to the source directory
+- `targetDir` (string): Path to the target directory
+- `pattern` (string, optional): File pattern to extract (e.g., `*.jpg`, `*.txt`)
+- `recursive` (boolean, optional): Search recursively in subdirectories (default: `true`)
+- `move` (boolean, optional): Move files instead of copying (default: `false`)
+- `conflictResolution` (string, optional): How to handle name conflicts:
+  - `"skip"`: Skip files with duplicate names
+  - `"overwrite"`: Overwrite existing files
+  - `"rename"`: Rename files with numerical suffix (default)
 
-**Ejemplo de uso:**
+**Usage example:**
 ```json
 {
-  "sourceDir": "/ruta/fuente",
-  "targetDir": "/ruta/destino",
+  "sourceDir": "/path/to/source",
+  "targetDir": "/path/to/target",
   "pattern": "*.jpg",
   "recursive": true,
   "move": false,
@@ -41,151 +41,171 @@ Extrae archivos de un directorio fuente a un directorio destino.
 ```
 
 ### 2. `list_files`
-Lista archivos en un directorio con información detallada.
+Lists files in a directory with detailed information.
 
-**Parámetros:**
-- `directory` (string): Ruta del directorio a listar
-- `pattern` (string, opcional): Patrón de archivos a listar (ej: `*.jpg`, `*.txt`)
-- `recursive` (boolean, opcional): Listar recursivamente (default: `false`)
+**Parameters:**
+- `directory` (string): Path to the directory to list
+- `pattern` (string, optional): File pattern to list (e.g., `*.jpg`, `*.txt`)
+- `recursive` (boolean, optional): List recursively (default: `false`)
 
-**Ejemplo de uso:**
+**Usage example:**
 ```json
 {
-  "directory": "/ruta/directorio",
+  "directory": "/path/to/directory",
   "pattern": "*.txt",
   "recursive": true
 }
 ```
 
 ### 3. `organize_files`
-Organiza archivos por criterio específico.
+Organizes files by specific criteria.
 
-**Parámetros:**
-- `sourceDir` (string): Ruta del directorio fuente
-- `targetDir` (string, opcional): Ruta del directorio destino (default: mismo directorio fuente)
-- `organizeBy` (string, opcional): Criterio de organización:
-  - `"extension"`: Organizar por extensión de archivo (default)
-  - `"date"`: Organizar por fecha de modificación (año-mes)
-  - `"size"`: Organizar por tamaño de archivo
+**Parameters:**
+- `sourceDir` (string): Path to the source directory
+- `targetDir` (string, optional): Path to the target directory (default: same as source directory)
+- `organizeBy` (string, optional): Organization criteria:
+  - `"extension"`: Organize by file extension (default)
+  - `"date"`: Organize by modification date (year-month)
+  - `"size"`: Organize by file size
 
-**Ejemplo de uso:**
+**Usage example:**
 ```json
 {
-  "sourceDir": "/ruta/fuente",
-  "targetDir": "/ruta/destino",
+  "sourceDir": "/path/to/source",
+  "targetDir": "/path/to/target",
   "organizeBy": "extension"
 }
 ```
 
-## Instalación
+## Installation
 
-### Desde GitHub
+### From GitHub
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/lalax-systems/file-extractor-mcp.git
 cd file-extractor-mcp
 
-# Instalar dependencias
+# Install dependencies
 npm install
 
-# Compilar el proyecto
+# Build the project
 npm run build
 ```
 
-### Configuración en Kilo Code
+### Configuration in Kilo Code
 
-Agregar al archivo de configuración MCP (`mcp_settings.json`):
+Add to the MCP configuration file (`mcp_settings.json`):
 
 ```json
 {
   "mcpServers": {
     "file-extractor": {
       "command": "node",
-      "args": ["/ruta/al/proyecto/file-extractor-mcp/build/index.js"],
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
       "disabled": false,
       "alwaysAllow": [],
-      "description": "MCP server para extraer archivos de directorios y moverlos a otro directorio"
+      "description": "MCP server for extracting files from directories and moving them to another directory"
     }
   }
 }
 ```
 
-### Instalación Global (opcional)
+### Configuration in VSCode Forks (Cursor, Cline, Windsurf, etc.)
+
+This MCP server is compatible with any VSCode fork that supports MCP servers. Add the following to your MCP configuration file (location varies by editor):
+
+**For Cursor**: `~/.cursor/mcp.json`
+**For Windsurf**: `~/.windsurf/mcp.json`
+**For Cline**: `~/.cline/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "file-extractor": {
+      "command": "node",
+      "args": ["/full/path/to/file-extractor-mcp/build/index.js"],
+      "disabled": false
+    }
+  }
+}
+```
+
+### Global Installation (optional)
 
 ```bash
 npm install -g @lalax-systems/file-extractor-mcp
 ```
 
-El servidor se ejecuta automáticamente cuando se inicia Kilo Code.
+The server runs automatically when Kilo Code or compatible editors start.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 file-extractor/
 ├── src/
-│   └── index.ts          # Implementación principal del servidor
+│   └── index.ts          # Main server implementation
 ├── build/
-│   └── index.js          # Código compilado
-├── package.json          # Dependencias y scripts
-├── tsconfig.json         # Configuración TypeScript
-└── README.md            # Esta documentación
+│   └── index.js          # Compiled code
+├── package.json          # Dependencies and scripts
+├── tsconfig.json         # TypeScript configuration
+└── README.md            # This documentation
 ```
 
-## Desarrollo
+## Development
 
-Para modificar el servidor:
+To modify the server:
 
-1. Editar el archivo `src/index.ts`
-2. Ejecutar `npm run build` para compilar
-3. Reiniciar Kilo Code para cargar los cambios
+1. Edit the `src/index.ts` file
+2. Run `npm run build` to compile
+3. Restart Kilo Code or your editor to load changes
 
-## Ejemplos de Uso
+## Usage Examples
 
-### Extraer todas las imágenes JPG:
+### Extract all JPG images:
 ```bash
-# Usando el tool extract_files
-sourceDir: "/home/usuario/fotos"
-targetDir: "/home/usuario/backup"
+# Using the extract_files tool
+sourceDir: "/home/user/photos"
+targetDir: "/home/user/backup"
 pattern: "*.jpg"
 recursive: true
 ```
 
-### Organizar documentos por extensión:
+### Organize documents by extension:
 ```bash
-# Usando el tool organize_files
-sourceDir: "/home/usuario/descargas"
+# Using the organize_files tool
+sourceDir: "/home/user/downloads"
 organizeBy: "extension"
 ```
 
-### Listar archivos PDF en un directorio:
+### List PDF files in a directory:
 ```bash
-# Usando el tool list_files
-directory: "/home/usuario/documentos"
+# Using the list_files tool
+directory: "/home/user/documents"
 pattern: "*.pdf"
 recursive: false
 ```
 
-## Notas
+## Notes
 
-- El servidor maneja automáticamente la creación de directorios destino
-- Soporta operaciones recursivas en subdirectorios
-- Proporciona resolución de conflictos de nombres
-- Devuelve JSON estructurado con resultados detallados
+- The server automatically creates target directories
+- Supports recursive operations in subdirectories
+- Provides name conflict resolution
+- Returns structured JSON with detailed results
 
-## Acerca de
+## About
 
-**Desarrollador**: Javier Gomez  
-**Empresa**: Lalax Systems  
-**Repositorio**: https://github.com/lalax-systems/file-extractor-mcp  
-**Sitio web**: https://www.lalax.com
+**Developer**: Javier Gomez  
+**Company**: Lalax Systems  
+**Repository**: https://github.com/lalax-systems/file-extractor-mcp  
+**Website**: https://www.lalax.com
 
-Este proyecto es parte del ecosistema de herramientas MCP desarrolladas por Lalax Systems para mejorar la productividad y automatización en el desarrollo de software.
+This project is part of the MCP tools ecosystem developed by Lalax Systems to improve productivity and automation in software development.
 
-## Contribuciones
+## Contributions
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o pull request en GitHub.
+Contributions are welcome. Please open an issue or pull request on GitHub.
 
-## Licencia
+## License
 
 MIT License - Copyright (c) 2026 Javier Gomez - Lalax Systems
